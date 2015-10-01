@@ -1,0 +1,51 @@
+name: MontyHall
+version: 1.0
+cabal-version: 1.6
+build-type: Simple
+license: AllRightsReserved
+license-file: ""
+copyright:
+maintainer:
+build-depends:
+stability: experimental
+homepage:
+package-url:
+bug-reports:
+synopsis:
+description:
+category:
+author:
+tested-with:
+data-files:
+data-dir: ""
+extra-source-files:
+extra-tmp-files:
+extra-doc-files:
+Executable MontyHall
+  main-is: Monty_Hall.hs
+  buildable: True
+  build-tools:
+  cpp-options:
+  cc-options:
+  ld-options:
+  pkgconfig-depends:
+  frameworks:
+  c-sources:
+  default-language:
+  other-languages:
+  default-extensions:
+  other-extensions:
+  extensions:
+  extra-libraries:
+  extra-lib-dirs:
+  includes:
+  install-includes:
+  include-dirs:
+  hs-source-dirs:
+  other-modules:
+  ghc-prof-options:
+  ghc-shared-options:
+  ghc-options:
+  hugs-options:
+  nhc98-options:
+  jhc-options:
