@@ -1,6 +1,6 @@
 The Monty Hall problem is a great example of how counter-intuitive probability can sometimes be. It goes something like this: say you're on a gameshow, with the chance to win a car. You're shown three doors, and the car is behind one, goats behind the other two. You pick a door, say the leftmost, but then the host of the gameshow stops you before it's opened. He opens one of the two doors you didn't pick, revealing a goat. He then asks you if you'd like to change your decision. So? Do you?
 
-Perhaps surprisingly, You *should* change your decision. Your chances of winning a car go from 1/3 to 2/3. 
+Perhaps surprisingly, you *should* change your decision. Your chances of winning a car go from 1/3 to 2/3. 
 
 If you've not thought for a while about the problem, the answer above might sound instinctively wrong. A few [blog posts](http://www.thomashanning.com/swift-playground-the-monty-hall-problem/) over the past few weeks have made an effort to put some concrete numbers to the statistics, running simulations of each possibility, and counting up the amount of wins and losses.
 
