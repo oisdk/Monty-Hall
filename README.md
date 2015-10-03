@@ -6,7 +6,7 @@ If you've not thought for a while about the problem, the answer above might soun
 
 I was still a little unsatisfied, though. I mean, showing me the actual numbers is fine, but I'd like something a little more *proof*-y. You can get close with a diagram:
 
-
+![Monty Hall Diagram](https://bigonotetaking.files.wordpress.com/2015/10/start.png?w=1000)
 
 Which makes it pretty clear what's going on: since the host *has* to show a goat when he opens a door, if you've picked a goat, then the only door left after the host opens one is the car. That means that if you switch and pick a goat, you *have* to win. So if you decide to switch, then what you want to do is pick a *goat* first, and the chances of that are 2/3.
 
