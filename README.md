@@ -225,11 +225,11 @@ public func chances(n: Int, _ d: Int, _ c: Choice) -> Prob<Bool> {
 }
 ```
 ```haskell
-chances :: Int -> (Int,Choice) -> Prob Bool
-chances n (d,Stick ) = fmap (==d) (equalProbs [1..n])
-chances n (d,Switch) =  (&&) . not          <$>
-                        chances n (d,Stick) <*>
-                        (equalProbs $ True : replicate (n-3) False)
+chances :: Int -> Choice -> Int -> Prob Bool
+chances n Stick  d = fmap (==d) (equalProbs [1..n])
+chances n Switch d =  (&&) . not        <$>
+                      chances n Stick d <*>
+                      (equalProbs $ True : replicate (n-3) False)
 ```
 
 Finally, the `chanceOfCar` function:
@@ -246,8 +246,8 @@ public func chanceOfCar(n: Int, _ s: Choice) -> Prob<Bool> {
 ```haskell
 chanceOfCar :: Int -> Choice -> Prob Bool
 chanceOfCar n s = mergeProbs $
-                  equalProbs (map (flip (,) s) [1..n]) >>= 
-                  chances n
+                  equalProbs [1..n] >>= 
+                  chances n s
 ```
 Which returns, as you'd expect, 1/3 chance of car if you stick, and 2/3 if you switch.
 
