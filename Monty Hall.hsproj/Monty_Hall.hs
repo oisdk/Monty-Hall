@@ -4,7 +4,6 @@ import Data.List
 import Data.Maybe
 import Data.Ord
 
-
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show  
 
 instance Functor Prob where  
@@ -23,13 +22,6 @@ equalProbs x = Prob $ map withProb x
   where withProb a = (a,1%n)
         n = fromIntegral $ length x
         
-data Door = L | M | R deriving (Show, Eq)
-data Choice = Switch | Stick
-
-chances :: (Door,Choice) -> Prob Bool
-chances (d,Stick ) = fmap (==d) (equalProbs [L,M,R])
-chances (d,Switch) = fmap (/=d) (equalProbs [L,M,R])
-
 mergeProbs :: Ord a => Prob a -> Prob a
 mergeProbs (Prob xs) = Prob $ mergeBy (comparing fst) addProb xs
   where addProb (a,pa) (_,pb) = (a,pa+pb)
@@ -43,6 +35,13 @@ mergeBy c m xs = mergeWith h [] t
         mergeWith h p (y:ys) = case c h y of
           EQ        -> mergeWith (m h y) p ys
           otherwise -> mergeWith y (h:p) ys
+
+data Door = L | M | R deriving (Show, Eq)
+data Choice = Switch | Stick
+
+chances :: (Door,Choice) -> Prob Bool
+chances (d,Stick ) = fmap (==d) (equalProbs [L,M,R])
+chances (d,Switch) = fmap (/=d) (equalProbs [L,M,R])
 
 chanceOfCar :: Choice -> Prob Bool
 chanceOfCar s = mergeProbs $ equalProbs (map (flip (,) s) [L,M,R]) >>= chances
