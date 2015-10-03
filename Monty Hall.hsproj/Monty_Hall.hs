@@ -36,12 +36,11 @@ mergeBy c m xs = mergeWith h [] t
           EQ        -> mergeWith (m h y) p ys
           otherwise -> mergeWith y (h:p) ys
 
-data Door = L | M | R deriving (Show, Eq)
 data Choice = Switch | Stick
 
-chances :: (Door,Choice) -> Prob Bool
-chances (d,Stick ) = fmap (==d) (equalProbs [L,M,R])
-chances (d,Switch) = fmap (/=d) (equalProbs [L,M,R])
+chances :: (Int,Choice) -> Prob Bool
+chances (d,Stick ) = fmap (==d) (equalProbs [1..2])
+chances (d,Switch) = fmap (/=d) (equalProbs [1..2])
 
 chanceOfCar :: Choice -> Prob Bool
-chanceOfCar s = mergeProbs $ equalProbs (map (flip (,) s) [L,M,R]) >>= chances
+chanceOfCar s = mergeProbs $ equalProbs (map (flip (,) s) [1..2]) >>= chances
