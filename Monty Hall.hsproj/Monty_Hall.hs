@@ -36,13 +36,13 @@ mergeBy c m xs = mergeWith h [] t
 
 data Choice = Switch | Stick
 
-chances :: Int -> (Int,Choice) -> Prob Bool
-chances n (d,Stick ) = fmap (==d) (equalProbs [1..n])
-chances n (d,Switch) =  (&&) . not          <$>
-                        chances n (d,Stick) <*>
-                        (equalProbs $ True : replicate (n-3) False)
+chances :: Int -> Choice -> Int -> Prob Bool
+chances n Stick  d = fmap (==d) (equalProbs [1..n])
+chances n Switch d =  (&&) . not        <$>
+                      chances n Stick d <*>
+                      (equalProbs $ True : replicate (n-3) False)
 
 chanceOfCar :: Int -> Choice -> Prob Bool
 chanceOfCar n s = mergeProbs $
-                  equalProbs (map (flip (,) s) [1..n]) >>= 
-                  chances n
+                  equalProbs [1..n] >>= 
+                  chances n s
