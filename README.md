@@ -57,7 +57,7 @@ equalProbs x = Prob $ map (flip (,) (1%n))  x
 
 Which is *fine*, I suppose, but still not very interesting. What we want is the ides of "branching" - like in the diagram. "If event A happens, then event B has X chance of happening, and event C has Y chance of happening":
 
-
+![A B C](https://bigonotetaking.files.wordpress.com/2015/10/a.png?w=1000)
 
 The normal rules of probability apply: the *overall* probability of B happening is equal to the probability of A multiplied by X. You could have several layers of branching from B and C onwards, with this multiplication happening at each stage.
 
