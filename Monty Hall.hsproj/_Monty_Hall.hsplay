@@ -1,3 +1,21 @@
 -- Haskell Playground 1.0
-getProb $ chanceOfCar Switch
-getProb $ chanceOfCar Stick
+data Coin = H | T deriving Show
+data Result = Win | Lose deriving (Show, Eq) 
+
+let play H = Prob [(Win,7%10),(Lose,3%10)]
+    play T = equalProbs [Win,Lose]
+
+instance Ord Result where
+  compare Win Lose = GT
+  compare Lose Win = LT
+  compare _    _   = EQ
+  
+mergeProbs ( equalProbs [H,T] >>= play )
+
+getProb $ mergeProbs ( Prob [(H,7%10),(T,3%10)] >>= play )
+
+getProb $ chanceOfCar 3 Switch
+getProb $ chanceOfCar 3 Stick
+
+getProb $ chanceOfCar 6 Switch
+getProb $ chanceOfCar 6 Stick

@@ -1,7 +1,6 @@
 import Control.Applicative
 import Data.Ratio
 import Data.List
-import Data.Maybe
 import Data.Ord
 
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show  
@@ -15,12 +14,11 @@ instance Applicative Prob where
   
 instance Monad Prob where
   return = pure
-  (Prob xs) >>= f = Prob [(y,px*py)|(x,px) <- xs, (y,py) <- getProb $ f x]
+  (Prob xs) >>= f = Prob [(y,px*py)|(x,px) <- xs, (y,py) <- getProb(f x)]
   
 equalProbs :: [a] -> Prob a
-equalProbs x = Prob $ map withProb x
-  where withProb a = (a,1%n)
-        n = fromIntegral $ length x
+equalProbs x = Prob $ map (flip (,) (1%n))  x
+  where n = fromIntegral (length x)
         
 mergeProbs :: Ord a => Prob a -> Prob a
 mergeProbs (Prob xs) = Prob $ mergeBy (comparing fst) addProb xs
@@ -38,9 +36,13 @@ mergeBy c m xs = mergeWith h [] t
 
 data Choice = Switch | Stick
 
-chances :: (Int,Choice) -> Prob Bool
-chances (d,Stick ) = fmap (==d) (equalProbs [1..2])
-chances (d,Switch) = fmap (/=d) (equalProbs [1..2])
+chances :: Int -> (Int,Choice) -> Prob Bool
+chances n (d,Stick ) = fmap (==d) (equalProbs [1..n])
+chances n (d,Switch) =  (&&) . not          <$>
+                        chances n (d,Stick) <*>
+                        (equalProbs $ True : replicate (n-3) False)
 
-chanceOfCar :: Choice -> Prob Bool
-chanceOfCar s = mergeProbs $ equalProbs (map (flip (,) s) [1..2]) >>= chances
+chanceOfCar :: Int -> Choice -> Prob Bool
+chanceOfCar n s = mergeProbs $
+                  equalProbs (map (flip (,) s) [1..n]) >>= 
+                  chances n
