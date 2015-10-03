@@ -75,3 +75,11 @@ extension Prob : CustomStringConvertible {
       }.joinWithSeparator("\n")
   }
 }
+
+extension Prob {
+  public func and<T>(w: Prob<T>) -> Prob<(Element, T)> {
+    return flatMap { a in
+      w.fmap { b in (a,b) }
+    }
+  }
+}

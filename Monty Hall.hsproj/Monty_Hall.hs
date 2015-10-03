@@ -2,6 +2,7 @@ import Control.Applicative
 import Data.Ratio
 import Data.List
 import Data.Ord
+import Data.Maybe
 
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show  
 
@@ -36,13 +37,14 @@ mergeBy c m xs = mergeWith h [] t
 
 data Choice = Switch | Stick
 
-chances :: Int -> Choice -> Int -> Prob Bool
-chances n Stick  d = fmap (==d) (equalProbs [1..n])
-chances n Switch d =  (&&) . not        <$>
-                      chances n Stick d <*>
-                      (equalProbs $ True : replicate (n-3) False)
+chances :: Int -> Int -> Choice -> Int -> Prob Bool
+chances n _ Stick  d = fmap (==d) (equalProbs [1..n])
+chances n p Switch d = (&&) . not          <$>
+                       chances n p Stick d <*>
+                       (equalProbs $ True : replicate (n-p-2) False)
 
-chanceOfCar :: Int -> Choice -> Prob Bool
-chanceOfCar n s = mergeProbs $
-                  equalProbs [1..n] >>= 
-                  chances n s
+chanceOfCar :: Int -> Int -> Choice -> Prob Bool
+chanceOfCar n p s = mergeProbs $
+                    equalProbs [1..n] >>= 
+                    chances n p s
+

@@ -14,8 +14,19 @@ mergeProbs ( equalProbs [H,T] >>= play )
 
 getProb $ mergeProbs ( Prob [(H,7%10),(T,3%10)] >>= play )
 
-getProb $ chanceOfCar 3 Switch
-getProb $ chanceOfCar 3 Stick
+getProb $ chanceOfCar 3 1 Switch
+getProb $ chanceOfCar 3 1 Stick
 
-getProb $ chanceOfCar 6 Switch
-getProb $ chanceOfCar 6 Stick
+getProb $ chanceOfCar 6 1 Switch
+getProb $ chanceOfCar 6 1 Stick
+
+let sample = [(n,p)| n <- [3..20], p <- [1..(n-2)]] 
+let expect = fmap frmla sample
+             where frmla :: (Integer,Integer) -> Rational
+                   frmla (n,p) = (n - 1)%(n*(n-p-1))
+
+let actual = fmap t sample
+             where t (n,p) = truePrb $ getProb $ chanceOfCar n p Switch
+                   truePrb = fromJust . (fmap snd) . (find fst)
+
+all id (zipWith (==) expect actual)

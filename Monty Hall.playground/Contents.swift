@@ -29,28 +29,22 @@ Prob([(Coin.H,0.7),(.T,0.3)])
 
 public enum Choice { case Switch, Stick }
 
-public func chances(n: Int, _ d: Int, _ c: Choice) -> Prob<Bool> {
+public func chances(n: Int, _ p: Int, _ c: Choice)(_ d: Int) -> Prob<Bool> {
   switch c {
   case .Stick : return (1...n).equalProbs.fmap(==d)
   case .Switch:
-    return chances(n, d, .Stick)
-      .fmap(!)
-      .flatMap { f in
-        ([true] + Array(count: n-3, repeatedValue: false))
-          .equalProbs
-          .fmap { s in f && s }
-        
-      }
+    let notFirst = chances(n,p,.Stick)(d).fmap(!)
+    let second   = Repeat(count: (n-p)-2, repeatedValue: false) + [true]
+    return notFirst.flatMap { f in second.equalProbs.fmap { s in f && s } }
   }
 }
 
-public func chanceOfCar(n: Int, _ s: Choice) -> Prob<Bool> {
+public func chanceOfCar(n: Int, _ p: Int, _ s: Choice) -> Prob<Bool> {
   return (1...n)
-    .map { d in (d,s) }
     .equalProbs
-    .flatMap { (d,c) in  chances(n, d, c) }
+    .flatMap(chances(n,p,s))
     .mergeProbs(comp)
 }
 
-chanceOfCar(6, .Stick)
-  .description
+let a = chanceOfCar(3, 1, .Stick).description
+
