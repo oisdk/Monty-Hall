@@ -278,7 +278,7 @@ let actual = fmap t sample
              where t (n,p) = truePrb $ getProb $ chanceOfCar n p Switch
                    truePrb = fromJust . (fmap snd) . (find fst)
 
-all id (zipWith (==) expect actual)
+expect == actual
 ```
 
 And it works! (I didn't try the Swift version, because of floating-point inaccuracies)

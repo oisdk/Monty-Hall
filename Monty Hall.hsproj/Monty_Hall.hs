@@ -3,6 +3,7 @@ import Data.Ratio
 import Data.List
 import Data.Ord
 import Data.Maybe
+import System.Random
 
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show  
 
@@ -48,3 +49,10 @@ chanceOfCar n p s = mergeProbs $
                     equalProbs [1..n] >>= 
                     chances n p s
 
+choose :: (Prob a) -> (IO a)
+choose (Prob x) = (fromN x) <$> fromIntegral <$> (getStdRandom (randomR (1,1000000)))
+  where fromN ((x,_):[]) _ = x
+        fromN ((x,p):xs) n
+              | v < 0     = x
+              | otherwise = fromN xs v
+              where v = n - p * 1000000
