@@ -4,7 +4,6 @@ import Data.List
 import Data.Ord
 import Data.Maybe
 import System.Random
-import Data.Tuple
 
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show  
 
@@ -20,15 +19,11 @@ instance Monad Prob where
   (Prob xs) >>= f = Prob [(y,px*py)|(x,px) <- xs, (y,py) <- getProb(f x)]
   
 equalProbs :: [a] -> Prob a
-equalProbs x = Prob $ map (flip (,) (1%n))  x
-  where n = fromIntegral (length x)
+equalProbs x = Prob $ fmap (flip (,) n)  x
+  where n = 1 % fromIntegral (length x)
      
 fmapFst :: (a -> b) -> (a,c) -> (b,c)
 fmapFst f (a,b) = (f a, b)
-
-uncons :: [a] -> Maybe (a, [a])
-uncons []     = Nothing
-uncons (x:xs) = Just (x, xs)
    
 mergeProbs :: Ord a => Prob a -> Prob a
 mergeProbs (Prob xs) = Prob $ mergeBy (comparing fst) (fmap . (+) . snd) xs
@@ -38,12 +33,8 @@ isEq EQ = True
 isEq _  = False
 
 mergeBy :: (a -> a -> Ordering) -> (a -> a -> a) -> [a] -> [a]
-mergeBy c m xs = mergeBySt eq m (sortBy c xs)
+mergeBy c m = (fmap $ foldl1' m) . (groupBy eq) . (sortBy c)
   where eq x y = isEq $ c x y
-
-mergeBySt :: (a -> a -> Bool) -> (a -> a -> a) -> [a] -> [a]
-mergeBySt e c = unfoldr $ fmap sumUp . uncons
-  where sumUp (l,ls) = fmapFst (foldl' c l) (break (not . e l) ls)
 
 data Choice = Switch | Stick
 
@@ -64,7 +55,4 @@ choose (Prob x) = (fromN x) <$> fromIntegral <$> (getStdRandom (randomR (1,10000
         fromN ((x,p):xs) n
               | v < 0     = x
               | otherwise = fromN xs v
-              where v = n - p * 1000000
-              
-
-                                       
+              where v = n - p * 1000000                 
