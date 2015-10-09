@@ -19,7 +19,7 @@ instance Monad Prob where
   (Prob xs) >>= f = Prob [(y,px*py)|(x,px) <- xs, (y,py) <- getProb(f x)]
   
 equalProbs :: [a] -> Prob a
-equalProbs x = Prob $ fmap (flip (,) n)  x
+equalProbs x = Prob $ (flip (,) n) <$> x
   where n = 1 % fromIntegral (length x)
      
 fmapFst :: (a -> b) -> (a,c) -> (b,c)
@@ -33,13 +33,13 @@ isEq EQ = True
 isEq _  = False
 
 mergeBy :: (a -> a -> Ordering) -> (a -> a -> a) -> [a] -> [a]
-mergeBy c m = (fmap $ foldl1' m) . (groupBy eq) . (sortBy c)
+mergeBy c m = (foldl1' m <$>) . (groupBy eq) . (sortBy c)
   where eq x y = isEq $ c x y
 
 data Choice = Switch | Stick
 
 chances :: Int -> Int -> Choice -> Int -> Prob Bool
-chances n _ Stick  d = fmap (==d) (equalProbs [1..n])
+chances n _ Stick  d = (==d) <$> (equalProbs [1..n])
 chances n p Switch d = (&&) . not          <$>
                        chances n p Stick d <*>
                        (equalProbs $ True : replicate (n-p-2) False)
