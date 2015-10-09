@@ -28,13 +28,12 @@ fmapFst f (a,b) = (f a, b)
 mergeProbs :: Ord a => Prob a -> Prob a
 mergeProbs (Prob xs) = Prob $ mergeBy (comparing fst) (fmap . (+) . snd) xs
 
-isEq :: Ordering -> Bool
-isEq EQ = True
-isEq _  = False
+eqOf :: (a -> a -> Ordering) -> (a -> a -> Bool)
+eqOf c = (\a b -> case c a b of EQ -> True 
+                                _  -> False)
 
 mergeBy :: (a -> a -> Ordering) -> (a -> a -> a) -> [a] -> [a]
-mergeBy c m = (foldl1' m <$>) . (groupBy eq) . (sortBy c)
-  where eq x y = isEq $ c x y
+mergeBy c m = (foldl1' m <$>) . (groupBy $ eqOf c) . (sortBy c)
 
 data Choice = Switch | Stick
 
@@ -50,9 +49,11 @@ chanceOfCar n p s = mergeProbs $
                     chances n p s
 
 choose :: (Prob a) -> (IO a)
-choose (Prob x) = (fromN x) <$> fromIntegral <$> (getStdRandom (randomR (1,1000000)))
-  where fromN ((x,_):[]) _ = x
-        fromN ((x,p):xs) n
-              | v < 0     = x
-              | otherwise = fromN xs v
-              where v = n - p * 1000000                 
+choose (Prob s) = fromN      <$> 
+                  (%1000000) <$> 
+                  getStdRandom (randomR (1,1000000))
+  where fromN n = fst         $ 
+                  fromJust    $                    
+                  find ((>n) . snd) accumed
+        accumed = scanl1 (fmap . (+) . snd) s
+              

@@ -1,33 +1,40 @@
 -- Haskell Playground 1.0
-data Coin = H | T deriving Show
-data Result = Win | Lose deriving (Show, Eq) 
+--data Coin = H | T deriving Show
+--data Result = Win | Lose deriving (Show, Eq) 
+--
+--let play H = Prob [(Win,7%10),(Lose,3%10)]
+--    play T = equalProbs [Win,Lose]
+--
+--instance Ord Result where
+--  compare Win Lose = GT
+--  compare Lose Win = LT
+--  compare _    _   = EQ
+--  
+--mergeProbs ( equalProbs [H,T] >>= play )
+--
+--getProb $ mergeProbs ( Prob [(H,7%10),(T,3%10)] >>= play )
+--
+--getProb $ chanceOfCar 3 1 Switch
+--getProb $ chanceOfCar 3 1 Stick
+--
+--getProb $ chanceOfCar 6 1 Switch
+--getProb $ chanceOfCar 6 1 Stick
+--
+--let sample = [(n,p)| n <- [3..20], p <- [1..(n-2)]] 
+--let expect = fmap frmla sample
+--             where frmla :: (Integer,Integer) -> Rational
+--                   frmla (n,p) = (n - 1)%(n*(n-p-1))
+--
+--let actual = fmap t sample
+--             where t (n,p) = truePrb $ getProb $ chanceOfCar n p Switch
+--                   truePrb = fromJust . (fmap snd) . (find fst)
+--
+--expect == actual
+--
 
-let play H = Prob [(Win,7%10),(Lose,3%10)]
-    play T = equalProbs [Win,Lose]
+let nums = mergeProbs $ equalProbs [1, 1, 2, 2, 3, 4, 4]
 
-instance Ord Result where
-  compare Win Lose = GT
-  compare Lose Win = LT
-  compare _    _   = EQ
-  
-mergeProbs ( equalProbs [H,T] >>= play )
 
-getProb $ mergeProbs ( Prob [(H,7%10),(T,3%10)] >>= play )
 
-getProb $ chanceOfCar 3 1 Switch
-getProb $ chanceOfCar 3 1 Stick
 
-getProb $ chanceOfCar 6 1 Switch
-getProb $ chanceOfCar 6 1 Stick
-
-let sample = [(n,p)| n <- [3..20], p <- [1..(n-2)]] 
-let expect = fmap frmla sample
-             where frmla :: (Integer,Integer) -> Rational
-                   frmla (n,p) = (n - 1)%(n*(n-p-1))
-
-let actual = fmap t sample
-             where t (n,p) = truePrb $ getProb $ chanceOfCar n p Switch
-                   truePrb = fromJust . (fmap snd) . (find fst)
-
-expect == actual
-
+choose nums
